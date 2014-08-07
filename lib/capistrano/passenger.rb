@@ -1,7 +1,1 @@
-require "capistrano/passenger/version"
-
-module Capistrano
-  module Passenger
-    # Your code goes here...
-  end
-end
+load File.expand_path('../tasks/passenger.cap', __FILE__)
