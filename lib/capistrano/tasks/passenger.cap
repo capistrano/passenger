@@ -1,0 +1,18 @@
+namespace :deploy do
+  desc 'Restart application'
+  task :restart do
+    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
+      execute :touch, release_path.join('tmp/restart.txt')
+    end
+  end
+  after :publishing, :restart
+end
+
+namespace :load do
+  task :defaults do
+    set :passenger_roles, :app
+    set :passenger_restart_runner, :sequence
+    set :passenger_restart_wait, 5
+    set :passenger_restart_limit, 2
+  end
+end
