@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["iybetesh@gmail.com"]
   spec.summary       = %q{Passenger support for Capistrano 3.x}
   spec.description   = %q{Passenger support for Capistrano 3.x}
-  spec.homepage      = "https://github.com/betesh/capistrano-passenger"
+  spec.homepage      = "https://github.com/capistrano/passenger"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
