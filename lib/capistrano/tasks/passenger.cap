@@ -1,9 +1,9 @@
 namespace :deploy do
   desc 'Restart application'
-  task :restart do
-    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      :stop
-      :start
+  task :hard_restart do
+    on roles fetch :passenger_roles do
+      deploy:stop
+      deploy:start
     end
   end
 
