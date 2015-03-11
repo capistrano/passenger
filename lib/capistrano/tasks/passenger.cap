@@ -2,8 +2,8 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      execute :mkdir, '-p', release_path.join('tmp')
-      execute :touch, release_path.join('tmp/restart.txt')
+      execute :stop
+      execute :start
     end
   end
   after :publishing, :restart
