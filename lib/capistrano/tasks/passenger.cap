@@ -16,6 +16,7 @@ namespace :deploy do
   end
 
   desc 'Start up application'
+  Rake::Task['start'].clear_actions
   task :start do
     on roles fetch :passenger_roles do
       within current_path do
@@ -25,6 +26,7 @@ namespace :deploy do
   end
 
   desc 'Stop the application'
+  Rake::Task['stop'].clear_actions
   task :stop do
     on roles fetch :passenger_roles do
       within current_path do
