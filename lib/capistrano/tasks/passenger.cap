@@ -1,5 +1,13 @@
 namespace :deploy do
   desc 'Restart application'
+  task :restart do
+    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
+      execute :mkdir, '-p', release_path.join('tmp')
+      execute :touch, release_path.join('tmp/restart.txt')
+    end
+  end
+
+  desc 'Hard restart application'
   task :hard_restart do
     on roles fetch :passenger_roles do
       invoke 'deploy:stop'
@@ -7,6 +15,7 @@ namespace :deploy do
     end
   end
 
+  desc 'Start up application'
   task :start do
     on roles fetch :passenger_roles do
       within current_path do
@@ -15,6 +24,7 @@ namespace :deploy do
     end
   end
 
+  desc 'Stop the application'
   task :stop do
     on roles fetch :passenger_roles do
       within current_path do
