@@ -2,15 +2,34 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      execute :bundle, :exec, deploy:stop
-      execute :bundle, :exec, deploy:start
+      execute :stop
+      execute :start
     end
   end
+
+  task :start do
+    on roles fetch :passenger_roles do
+      within current_path do
+        execute :bundle, :exec, fetch(:passenger_cmd), :start, '-e', fetch(:rails_env), '-p', fetch(:passenger_port), '-d', '--disable-turbocaching'
+      end
+    end
+  end
+
+  task :stop do
+    on roles fetch :passenger_roles do
+      within current_path do
+        execute :bundle, :exec, fetch(:passenger_cmd), :stop, '-p', fetch(:passenger_port)
+      end
+    end
+  end
+
   after :publishing, :restart
 end
 
 namespace :load do
   task :defaults do
+    set :passenger_cmd, 'passenger'
+    set :passenger_port, 9090
     set :passenger_roles, :app
     set :passenger_restart_runner, :sequence
     set :passenger_restart_wait, 5
