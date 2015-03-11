@@ -2,8 +2,8 @@ namespace :deploy do
   desc 'Restart application'
   task :hard_restart do
     on roles fetch :passenger_roles do
-      stop
-      start
+      invoke 'deploy:stop'
+      invoke 'deploy:start'
     end
   end
 
