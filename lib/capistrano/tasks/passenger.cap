@@ -23,7 +23,9 @@ namespace :deploy do
   task :start do
     on roles fetch :passenger_roles do
       within current_path do
-        execute :bundle, :exec, fetch(:passenger_cmd), :start, '-e', fetch(:rails_env), '-p', fetch(:passenger_port), '-d', '--disable-turbocaching'
+        turbocache_flag = fetch(:passenger_turbocache_enabled) ? nil : '--disable-turbocaching'
+
+        execute :bundle, :exec, fetch(:passenger_cmd), :start, '-e', fetch(:rails_env), '-p', fetch(:passenger_port), '-d', turbocache_flag
       end
     end
   end
