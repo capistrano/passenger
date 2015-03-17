@@ -42,11 +42,10 @@ end
 
 namespace :load do
   task :defaults do
-    set :passenger_cmd, 'passenger'
-    set :passenger_port, 9090
     set :passenger_roles, :app
     set :passenger_restart_runner, :sequence
     set :passenger_restart_wait, 5
     set :passenger_restart_limit, 2
+    set :passenger_turbocache_enabled, true
   end
 end
