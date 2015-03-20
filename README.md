@@ -45,7 +45,7 @@ Note that `passenger_restart_limit` has no effect if you are using the default `
 
 ## Contributing
 
-1. Fork it ( https://github.com/betesh/capistrano-passenger/fork )
+1. Fork it ( https://github.com/capistrano/passenger/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
