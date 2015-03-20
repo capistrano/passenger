@@ -1,47 +1,85 @@
 # Capistrano::Passenger
 
-Adds a task to restart your application after deployment via Capistrano:
-
-   * cap production deploy:restart
+Adds a task to restart your application after deployment via Capistrano. Supports Passenger versions 5 and lower.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'capistrano-passenger'
+``` ruby
+gem 'capistrano-passenger'
+```
 
 And then execute:
 
-    $ bundle
+``` bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install capistrano-passenger
+``` bash
+$ gem install capistrano-passenger
+```
 
 ## Usage
 
-Adding this line to your `Capfile` will load the default configuration and make the task run after `deploy:publishing`:
+Add this line to your `Capfile` and `deploy:restart` will be setup to automatically run after `:publishing` is complete:
 
-    require 'capistrano/passenger'
+``` ruby
+require 'capistrano/passenger'
+```
 
-You can also run the task in isolation:
+You can also run the underlying task in isolation:
 
-    $ cap production deploy:restart
+``` bash
+# Restart your Passenger application.
+# The restart mechanism used is based on the version of Passenger installed on your server.
+$ cap production passenger:restart
+```
 
-Configurable options:
+Configurable options and their defaults:
 
-    set :passenger_roles, :app                  # this is default
-    set :passenger_restart_runner, :sequence    # this is default
-    set :passenger_restart_wait, 5              # this is default
-    set :passenger_restart_limit, 2             # this is default
+``` ruby
+set :passenger_roles, :app
+set :passenger_restart_runner, :sequence
+set :passenger_restart_wait, 5
+set :passenger_restart_limit, 2
+set :passenger_restart_with_sudo, false
+set :passenger_environment_variables, {}
+set :passenger_restart_command, 'passenger-config restart-app'
+set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
+```
+
+### Restarting Your Passenger Application
+
+In most cases, the default settings should just work for most people. This plugin checks the version of passenger you're running on your server(s) and invokes the appropriate restart mechanism based on that.
 
 `passenger_restart_wait` and `passenger_restart_limit` are passed to the `on` block when restarting the application:
 
-    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      execute :touch, release_path.join('tmp/restart.txt')
-    end
+``` ruby
+on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
+  with fetch(:passenger_environment_variables) do
+    # Version-specific restart happens here.
+  end
+end
+```
 
 Note that `passenger_restart_limit` has no effect if you are using the default `passenger_restart_runner` of `:sequence`.  sshkit only looks at it when the runner is `:group`.
+
+### Restarting Passenger 5 (and above) Applications
+
+Passenger 5 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
+
+If you need to pass additional/different options to `:passenger_restart_command`, simply override `:passenger_restart_options`.
+
+`:passenger_environment_variables` is available if anything about your environment is not available to the user deploying your application. One use-case for this is when `passenger-config` isn't available in your user's `PATH` on the server. You could override it like so:
+
+``` ruby
+set :passenger_environment_variables, { :path => '/your/path/to/passenger/bin:$PATH' }
+```
+
+If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger 4 (and lower) applications.
 
 ## Contributing
 

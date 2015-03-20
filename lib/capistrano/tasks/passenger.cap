@@ -1,12 +1,29 @@
 namespace :deploy do
-  desc 'Restart application'
+  desc 'Restart your Passenger application'
   task :restart do
-    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      execute :mkdir, '-p', release_path.join('tmp')
-      execute :touch, release_path.join('tmp/restart.txt')
-    end
+    invoke('passenger:restart')
   end
   after :publishing, :restart
+end
+
+namespace :passenger do
+  desc 'Restart your Passenger application'
+  task :restart do
+    on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
+      with fetch(:passenger_environment_variables) do
+        passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1].to_i
+
+        if passenger_version > 4
+          restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
+          arguments = [restart_with_sudo, fetch(:passenger_restart_command), fetch(:passenger_restart_options)].compact
+          execute *arguments
+        else
+          execute :mkdir, '-p', release_path.join('tmp')
+          execute :touch, release_path.join('tmp/restart.txt')
+        end
+      end
+    end
+  end
 end
 
 namespace :load do
@@ -15,5 +32,9 @@ namespace :load do
     set :passenger_restart_runner, :sequence
     set :passenger_restart_wait, 5
     set :passenger_restart_limit, 2
+    set :passenger_restart_with_sudo, false
+    set :passenger_environment_variables, {}
+    set :passenger_restart_command, 'passenger-config restart-app'
+    set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
   end
 end
