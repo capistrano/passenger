@@ -2,10 +2,43 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
-      execute :mkdir, '-p', release_path.join('tmp')
-      execute :touch, release_path.join('tmp/restart.txt')
+      if test "[ -s #{release_path}/tmp/pids/passenger.#{fetch(:passenger_port)}.pid ]"
+        execute :mkdir, '-p', release_path.join('tmp')
+        execute :touch, release_path.join('tmp/restart.txt')
+      else
+        invoke 'deploy:start'
+      end
     end
   end
+
+  desc 'Hard restart application'
+  task :hard_restart do
+    on roles fetch :passenger_roles do
+      invoke 'deploy:stop'
+      invoke 'deploy:start'
+    end
+  end
+
+  desc 'Start up application'
+  task :start do
+    on roles fetch :passenger_roles do
+      within current_path do
+        turbocache_flag = fetch(:passenger_turbocache_enabled) ? nil : '--disable-turbocaching'
+
+        execute :bundle, :exec, fetch(:passenger_cmd), :start, '-e', fetch(:rails_env), '-p', fetch(:passenger_port), '-d', turbocache_flag
+      end
+    end
+  end
+
+  desc 'Stop the application'
+  task :stop do
+    on roles fetch :passenger_roles do
+      within current_path do
+        execute :bundle, :exec, fetch(:passenger_cmd), :stop, '-p', fetch(:passenger_port)
+      end
+    end
+  end
+
   after :publishing, :restart
 end
 
@@ -15,5 +48,6 @@ namespace :load do
     set :passenger_restart_runner, :sequence
     set :passenger_restart_wait, 5
     set :passenger_restart_limit, 2
+    set :passenger_turbocache_enabled, true
   end
 end
