@@ -91,8 +91,6 @@ If you need to pass additional/different options to `:passenger_restart_command`
 set :passenger_environment_variables, { :path => '/your/path/to/passenger/bin:$PATH' }
 ```
 
-
-
 If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger 4 (and lower) applications.
 
 ## Contributing
