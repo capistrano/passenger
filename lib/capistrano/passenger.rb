@@ -1,1 +1,1 @@
-load File.expand_path('../tasks/passenger.cap', __FILE__)
+load File.expand_path('../tasks/deploy_passenger.cap', __FILE__)

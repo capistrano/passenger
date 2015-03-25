@@ -1,0 +1,9 @@
+load File.expand_path('../passenger.cap', __FILE__)
+
+namespace :deploy do
+  desc 'Restart your Passenger application'
+  task :restart do
+    invoke('passenger:restart')
+  end
+  after :publishing, :restart
+end

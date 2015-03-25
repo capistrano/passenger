@@ -36,6 +36,20 @@ You can also run the underlying task in isolation:
 # Restart your Passenger application.
 # The restart mechanism used is based on the version of Passenger installed on your server.
 $ cap production passenger:restart
+# Alternatively:
+$ cap production deploy:restart
+```
+
+If you want the task to run at a different point in your deployment, require `capistrano/passenger/no_hook` instead of `capistrano/passenger` and then add your own hook in `config/deploy.rb`.
+
+When using this gem in this way, you must use `passenger:restart`--the `deploy:restart` alias is not available
+
+``` ruby
+# Capfile
+require `capistrano/passenger/no_hook`
+
+# config/deploy.rb
+after :some_other_task, :'passenger:restart'
 ```
 
 Configurable options and their defaults:
