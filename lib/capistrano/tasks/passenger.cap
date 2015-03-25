@@ -24,7 +24,15 @@ namespace :passenger do
       end
     end
   end
+
+  namespace :rvm do
+    task :hook do
+      set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
+    end
+  end
 end
+
+before :'rvm:hook', :'passenger:rvm:hook'
 
 namespace :load do
   task :defaults do

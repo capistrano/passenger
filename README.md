@@ -73,6 +73,8 @@ Passenger 5 introduced a new way to restart your application, and thus has some 
 
 If you need to pass additional/different options to `:passenger_restart_command`, simply override `:passenger_restart_options`.
 
+NOTE: If if you are using RVM, this is most likely unnecessary.
+
 `:passenger_environment_variables` is available if anything about your environment is not available to the user deploying your application. One use-case for this is when `passenger-config` isn't available in your user's `PATH` on the server. You could override it like so:
 
 ``` ruby
