@@ -40,9 +40,7 @@ $ cap production passenger:restart
 $ cap production deploy:restart
 ```
 
-If you want the task to run at a different point in your deployment, require `capistrano/passenger/no_hook` instead of `capistrano/passenger` and then add your own hook in `config/deploy.rb`.
-
-When using this gem in this way, you must use `passenger:restart`--the `deploy:restart` alias is not available
+If you want the task to run at a different point in your deployment, require `capistrano/passenger/no_hook` instead of `capistrano/passenger` and then add your own hook in `config/deploy.rb`.  When using this gem in this way, you must use `passenger:restart`--the `deploy:restart` alias is not available.  Example:
 
 ``` ruby
 # Capfile
