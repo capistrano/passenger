@@ -24,7 +24,6 @@ namespace :passenger do
   end
 end
 
-before :'rvm:hook', :'passenger:rvm:hook'
 
 namespace :load do
   task :defaults do
@@ -36,5 +35,8 @@ namespace :load do
     set :passenger_environment_variables, {}
     set :passenger_restart_command, 'passenger-config restart-app'
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
+    if Rake.application.tasks.collect(&:to_s).include?("rvm:hook")
+      before :'rvm:hook', :'passenger:rvm:hook'
+    end
   end
 end
