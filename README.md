@@ -44,7 +44,7 @@ If you want the task to run at a different point in your deployment, require `ca
 
 ``` ruby
 # Capfile
-require `capistrano/passenger/no_hook`
+require 'capistrano/passenger/no_hook'
 
 # config/deploy.rb
 after :some_other_task, :'passenger:restart'
