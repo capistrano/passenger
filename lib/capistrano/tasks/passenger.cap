@@ -22,6 +22,12 @@ namespace :passenger do
       set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
     end
   end
+
+  namespace :rbenv do
+    task :hook do
+      set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config']
+    end
+  end
 end
 
 
@@ -37,6 +43,9 @@ namespace :load do
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     if Rake.application.tasks.collect(&:to_s).include?("rvm:hook")
       before :'rvm:hook', :'passenger:rvm:hook'
+    end
+    if Rake.application.tasks.collect(&:to_s).include?("rbenv:map_bins")
+      before :'rbenv:map_bins', :'passenger:rbenv:hook'
     end
   end
 end
