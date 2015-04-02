@@ -19,7 +19,25 @@ namespace :passenger do
 
   namespace :rvm do
     task :hook do
-      set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
+      passenger_installed_via_rvm = false
+      on roles(fetch(:passenger_roles)) do
+        passenger_installed_via_rvm = !(test :which, :passenger)
+      end
+      if passenger_installed_via_rvm
+        if fetch(:passenger_rvm_ruby_version) == fetch(:rvm_ruby_version)
+          set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
+        else
+          after :'rvm:hook', :'passenger:rvm:after_rvm_path_is_set'
+        end
+      end
+    end
+
+    task :after_rvm_path_is_set do
+      # This is very similar to code in capistrano-rvm.  Ideally, there would be a way to hook into that code instead of duplicating it with only minor changes.
+      passenger_rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:passenger_rvm_ruby_version)} do"
+      [:passenger, :'passenger-config'].each do |command|
+        SSHKit.config.command_map.prefix[command.to_sym].unshift(passenger_rvm_prefix)
+      end
     end
   end
 
@@ -41,6 +59,7 @@ namespace :load do
     set :passenger_environment_variables, {}
     set :passenger_restart_command, 'passenger-config restart-app'
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
+    set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     if Rake.application.tasks.collect(&:to_s).include?("rvm:hook")
       before :'rvm:hook', :'passenger:rvm:hook'
     end

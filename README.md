@@ -79,17 +79,21 @@ end
 
 Note that `passenger_restart_limit` has no effect if you are using the default `passenger_restart_runner` of `:sequence`.  sshkit only looks at it when the runner is `:group`.
 
+`:passenger_environment_variables` is available if anything about your environment is not available to the user deploying your application. One use-case for this is when `passenger-config` isn't available in your user's `PATH` on the server. You could override it like so:
+
+``` ruby
+set :passenger_environment_variables, { :path => '/your/path/to/passenger/bin:$PATH' }
+```
+
+### Note for RVM users
+
+https://www.phusionpassenger.com/documentation/Users%20guide%20Apache.html#_when_the_system_has_multiple_ruby_interpreters descibes how "Once installed, you can run Phusion Passenger’s Ruby parts under any Ruby interpreter you want, even if that Ruby interpreter was not the one you originally installed Phusion Passenger with. [...] There is however one caveat if you happen to be using RVM or RVM gemsets. When you gem install Phusion Passenger using RVM," it is available only to the Ruby version where it was installed.  Therefore, if you are using RVM **AND** passenger was installed via RVM **AND** it was installed under a different version of RVM than `fetch(:rvm_ruby_version)`, you need to `set :passenger_rvm_ruby_version` in your `config/deploy.rb`.
+
 ### Restarting Passenger 5 (and above) Applications
 
 Passenger 5 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
 
 If you need to pass additional/different options to `:passenger_restart_command`, simply override `:passenger_restart_options`.
-
-`:passenger_environment_variables` is available if anything about your environment is not available to the user deploying your application. One use-case for this is when `passenger-config` isn't available in your user's `PATH` on the server. You could override it like so (NOTE: If if you are using RVM, this is most likely unnecessary):
-
-``` ruby
-set :passenger_environment_variables, { :path => '/your/path/to/passenger/bin:$PATH' }
-```
 
 If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger 4 (and lower) applications.
 
