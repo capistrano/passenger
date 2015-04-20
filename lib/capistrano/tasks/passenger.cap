@@ -3,12 +3,17 @@ namespace :passenger do
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
       with fetch(:passenger_environment_variables) do
-        passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1].to_i
+        passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/) { |m| m[1].to_i }
+
+        if passenger_version.nil?
+          puts 'ERROR: passenger command not found.'
+          exit
+        end
 
         if passenger_version > 4
           restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
-          arguments = [restart_with_sudo, *fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)].compact
-          execute *arguments
+          arguments = SSHKit::Command.new(*[*fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)]).to_s
+          execute *[restart_with_sudo, arguments].compact
         else
           execute :mkdir, '-p', release_path.join('tmp')
           execute :touch, release_path.join('tmp/restart.txt')
@@ -46,6 +51,12 @@ namespace :passenger do
       set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config']
     end
   end
+
+  namespace :chruby do
+    task :hook do
+      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
+    end
+  end
 end
 
 
@@ -65,6 +76,9 @@ namespace :load do
     end
     if Rake.application.tasks.collect(&:to_s).include?("rbenv:map_bins")
       before :'rbenv:map_bins', :'passenger:rbenv:hook'
+    end
+    if tasks.include?("chruby:map_bins")
+      before :'chruby:map_bins', :'passenger:chruby:hook'
     end
   end
 end
