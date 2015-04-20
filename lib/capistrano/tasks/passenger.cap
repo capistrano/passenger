@@ -3,7 +3,12 @@ namespace :passenger do
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
       with fetch(:passenger_environment_variables) do
-        passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1].to_i
+        passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/) { |m| m[1].to_i }
+
+        if passenger_version.nil?
+          puts 'ERROR: passenger command not found.'
+          exit
+        end
 
         if passenger_version > 4
           restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
