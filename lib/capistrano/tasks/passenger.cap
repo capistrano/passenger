@@ -21,8 +21,8 @@ namespace :passenger do
             execute :touch, release_path.join('tmp/restart.txt')
           else
             restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
-            arguments = [restart_with_sudo, *fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)].compact
-            execute *arguments
+            arguments = SSHKit::Command.new(*[*fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)]).to_s
+            execute *[restart_with_sudo, arguments].compact
           end
         end
       end
