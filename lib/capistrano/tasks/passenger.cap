@@ -46,6 +46,12 @@ namespace :passenger do
       set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config']
     end
   end
+
+  namespace :chruby do
+    task :hook do
+      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
+    end
+  end
 end
 
 
@@ -65,6 +71,9 @@ namespace :load do
     end
     if Rake.application.tasks.collect(&:to_s).include?("rbenv:map_bins")
       before :'rbenv:map_bins', :'passenger:rbenv:hook'
+    end
+    if tasks.include?("chruby:map_bins")
+      before :'chruby:map_bins', :'passenger:chruby:hook'
     end
   end
 end
