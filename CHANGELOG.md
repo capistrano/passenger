@@ -1,3 +1,8 @@
+# 0.0.6 (13 May 2015)
+* Bug fixes:
+  * When unable to run passenger -v on server, fails. Add option to
+    explitly set passenger version (@yule, capistrano/passenger#18) 
+
 # 0.0.5 (12 Apr 2015)
 
 * Bug fixes:
