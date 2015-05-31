@@ -60,10 +60,11 @@ namespace :load do
     set :passenger_restart_command, 'passenger-config restart-app'
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
-    if Rake.application.tasks.collect(&:to_s).include?("rvm:hook")
+    _tasks = Rake.application.tasks.collect(&:to_s)
+    if _tasks.include?("rvm:hook")
       before :'rvm:hook', :'passenger:rvm:hook'
     end
-    if Rake.application.tasks.collect(&:to_s).include?("rbenv:map_bins")
+    if _tasks.include?("rbenv:map_bins")
       before :'rbenv:map_bins', :'passenger:rbenv:hook'
     end
   end
