@@ -4,9 +4,13 @@ namespace :passenger do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
       with fetch(:passenger_environment_variables) do
         within(release_path) do
-          passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1]
+          restart_with_touch = fetch(:passenger_restart_with_touch, nil)
+          if restart_with_touch.nil?
+            passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1]
+            restart_with_touch = Gem::Version.new(passenger_version) < Gem::Version.new('4.0.33')
+          end
 
-          if Gem::Version.new(passenger_version) < Gem::Version.new('4.0.33')
+          if restart_with_touch
             execute :mkdir, '-p', release_path.join('tmp')
             execute :touch, release_path.join('tmp/restart.txt')
           else

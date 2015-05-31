@@ -93,13 +93,15 @@ https://www.phusionpassenger.com/documentation/Users%20guide%20Apache.html#_when
 
 If you are running passenger in standalone mode, it is possible for you to put passenger in your Gemfile and rely on capistrano-bundler to install it with the rest of your bundle.  If you are installing passenger during your deployment **AND** you are using the new restart method (see below), you need to set `:passenger_in_gemfile` to `true` in your `config/deploy.rb`.
 
-### Restarting Passenger 5 (and above) Applications
+### Restarting Passenger >= 4.0.33 Applications
 
-Passenger 5 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
+Passenger 4.0.33 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
 
 If you need to pass additional/different options to `:passenger_restart_command`, simply override `:passenger_restart_options`.
 
-If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger 4 (and lower) applications.
+If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger <= 4.0.32 applications.
+
+To opt out of the new way to restart, and use the deprecated approach instead, set `:passenger_restart_with_touch` to `true`.
 
 ## Contributing
 
