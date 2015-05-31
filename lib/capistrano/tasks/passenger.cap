@@ -3,6 +3,7 @@ namespace :passenger do
   task :restart do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
       with fetch(:passenger_environment_variables) do
+        within(release_path) do
         passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1]
 
         if Gem::Version.new(passenger_version) >= Gem::Version.new('4.0.33')
@@ -12,6 +13,7 @@ namespace :passenger do
         else
           execute :mkdir, '-p', release_path.join('tmp')
           execute :touch, release_path.join('tmp/restart.txt')
+        end
         end
       end
     end
@@ -52,6 +54,12 @@ namespace :passenger do
       set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
     end
   end
+
+  namespace :bundler do
+    task :hook do
+      set :bundle_bins, fetch(:bundle_bins) + [:passenger, :'passenger-config'] if fetch(:passenger_in_gemfile, false)
+    end
+  end
 end
 
 
@@ -67,6 +75,9 @@ namespace :load do
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
+    if _tasks.include?("bundler:map_bins")
+      before :'bundler:map_bins', :'passenger:bundler:hook'
+    end
     if _tasks.include?("rvm:hook")
       before :'rvm:hook', :'passenger:rvm:hook'
     elsif _tasks.include?("rbenv:map_bins")

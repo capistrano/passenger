@@ -89,6 +89,10 @@ set :passenger_environment_variables, { :path => '/your/path/to/passenger/bin:$P
 
 https://www.phusionpassenger.com/documentation/Users%20guide%20Apache.html#_when_the_system_has_multiple_ruby_interpreters descibes how "Once installed, you can run Phusion Passenger’s Ruby parts under any Ruby interpreter you want, even if that Ruby interpreter was not the one you originally installed Phusion Passenger with. [...] There is however one caveat if you happen to be using RVM or RVM gemsets. When you gem install Phusion Passenger using RVM," it is available only to the Ruby version where it was installed.  Therefore, if you are using RVM **AND** passenger was installed via RVM **AND** it was installed under a different version of RVM than `fetch(:rvm_ruby_version)`, you need to `set :passenger_rvm_ruby_version` in your `config/deploy.rb`.
 
+### Note for Standalone Passenger users
+
+If you are running passenger in standalone mode, it is possible for you to put passenger in your Gemfile and rely on capistrano-bundler to install it with the rest of your bundle.  If you are installing passenger during your deployment **AND** you are using the new restart method (see below), you need to set `:passenger_in_gemfile` to `true` in your `config/deploy.rb`.
+
 ### Restarting Passenger 5 (and above) Applications
 
 Passenger 5 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
