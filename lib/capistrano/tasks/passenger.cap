@@ -4,14 +4,19 @@ namespace :passenger do
     on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: fetch(:passenger_restart_wait), limit: fetch(:passenger_restart_limit) do
       with fetch(:passenger_environment_variables) do
         passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1].to_i
+        default_method = passenger_version > 4 ? :command : :restart_txt
+        restart_method = fetch(:passenger_restart_method, nil) || default_method
 
-        if passenger_version > 4
+        case restart_method
+        when :command
           restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
           arguments = [restart_with_sudo, *fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)].compact
           execute *arguments
-        else
+        when :restart_txt
           execute :mkdir, '-p', release_path.join('tmp')
           execute :touch, release_path.join('tmp/restart.txt')
+        else
+          raise ArgumentError, "Unknown restart method: #{restart_method.inspect}"
         end
       end
     end
@@ -63,6 +68,7 @@ namespace :load do
     set :passenger_restart_limit, 2
     set :passenger_restart_with_sudo, false
     set :passenger_environment_variables, {}
+    set :passenger_restart_method, nil
     set :passenger_restart_command, 'passenger-config restart-app'
     set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
