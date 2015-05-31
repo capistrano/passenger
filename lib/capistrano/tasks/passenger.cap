@@ -69,11 +69,9 @@ namespace :load do
     _tasks = Rake.application.tasks.collect(&:to_s)
     if _tasks.include?("rvm:hook")
       before :'rvm:hook', :'passenger:rvm:hook'
-    end
-    if _tasks.include?("rbenv:map_bins")
+    elsif _tasks.include?("rbenv:map_bins")
       before :'rbenv:map_bins', :'passenger:rbenv:hook'
-    end
-    if _tasks.include?("chruby:map_bins")
+    elsif _tasks.include?("chruby:map_bins")
       before :'chruby:map_bins', :'passenger:chruby:hook'
     end
   end
