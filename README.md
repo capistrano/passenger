@@ -61,6 +61,7 @@ set :passenger_restart_with_sudo, false
 set :passenger_environment_variables, {}
 set :passenger_restart_command, 'passenger-config restart-app'
 set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
+set :passenger_version, -> { `passenger -v` }
 ```
 
 ### Restarting Your Passenger Application
@@ -96,6 +97,12 @@ Passenger 5 introduced a new way to restart your application, and thus has some 
 If you need to pass additional/different options to `:passenger_restart_command`, simply override `:passenger_restart_options`.
 
 If you require `sudo` when restarting passenger, set `:passenger_restart_with_sudo` to `true`. **Note**: This option has no effect when restarting Passenger 4 (and lower) applications.
+
+### Package installed Passenger 
+
+If you're unable to run `passenger -v` on your server, or it's not in
+your PATH, you can explicitly set the version of passenger to use with
+set :passenger_version
 
 ## Contributing
 
