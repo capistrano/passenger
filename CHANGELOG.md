@@ -1,3 +1,11 @@
+# 0.1.0 (3 June 2015)
+
+* BREAKING CHANGES
+  * On version of passenger that support both restarting by touch and restarting with passenger-config, the default is to use passenger-config.  set :passenger_restart_with_touch to true to opt out of this.
+* Bug fixes:
+  * Restored support for CHRuby (@aeons, capistrano/passenger#16)
+  * Restored support for passenger installed by bundle (@betesh, capistrano/passenger#10)
+
 # 0.0.5 (12 Apr 2015)
 
 * Bug fixes:
