@@ -29,13 +29,15 @@ namespace :passenger do
     end
   end
 
+  task :test_which_passenger do
+    on roles(fetch(:passenger_roles)) do
+      set(:passenger_in_path, test(:which, :passenger))
+    end
+  end
+
   namespace :rvm do
-    task :hook do
-      passenger_installed_via_rvm = false
-      on roles(fetch(:passenger_roles)) do
-        passenger_installed_via_rvm = !(test :which, :passenger)
-      end
-      if passenger_installed_via_rvm
+    task hook: :"passenger:test_which_passenger" do
+      unless fetch(:passenger_in_path)
         if fetch(:passenger_rvm_ruby_version) == fetch(:rvm_ruby_version)
           set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
         else
@@ -54,14 +56,14 @@ namespace :passenger do
   end
 
   namespace :rbenv do
-    task :hook do
-      set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config']
+    task hook: :"passenger:test_which_passenger" do
+      set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config'] unless fetch(:passenger_in_path)
     end
   end
 
   namespace :chruby do
-    task :hook do
-      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
+    task hook: :"passenger:test_which_passenger" do
+      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config'] unless fetch(:passenger_in_path)
     end
   end
 
