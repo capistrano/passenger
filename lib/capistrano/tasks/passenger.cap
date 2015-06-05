@@ -55,13 +55,25 @@ namespace :passenger do
 
   namespace :rbenv do
     task :hook do
+      passenger_installed_via_rbenv = false
+      on roles(fetch(:passenger_roles)) do
+        passenger_installed_via_rbenv = !(test :which, :passenger)
+      end
+      if passenger_installed_via_rbenv
       set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config']
+      end
     end
   end
 
   namespace :chruby do
     task :hook do
-      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
+      passenger_installed_via_chruby = false
+      on roles(fetch(:passenger_roles)) do
+        passenger_installed_via_chruby = !(test :which, :passenger)
+      end
+      if passenger_installed_via_chruby
+        set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config']
+      end
     end
   end
 
