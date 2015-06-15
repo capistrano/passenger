@@ -12,7 +12,7 @@ namespace :passenger do
       with fetch(:passenger_environment_variables) do
         within(release_path) do
           if restart_with_touch.nil?
-            passenger_version = capture(:passenger, '-v').match(/\APhusion Passenger version (.*)$/)[1]
+            passenger_version = capture(:passenger, '-v').match(/Phusion Passenger version (.*)$/)[1]
             restart_with_touch = Gem::Version.new(passenger_version) < Gem::Version.new('4.0.33')
           end
 
