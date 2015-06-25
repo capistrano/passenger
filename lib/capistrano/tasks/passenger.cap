@@ -20,9 +20,17 @@ namespace :passenger do
             execute :mkdir, '-p', release_path.join('tmp')
             execute :touch, release_path.join('tmp/restart.txt')
           else
-            restart_with_sudo = fetch(:passenger_restart_with_sudo) ? :sudo : nil
-            arguments = SSHKit::Command.new(*[*fetch(:passenger_restart_command).split(" ").collect(&:to_sym), fetch(:passenger_restart_options)]).to_s
-            execute *[restart_with_sudo, arguments].compact
+            restart_command = fetch(:passenger_restart_command).split(" ").collect(&:to_sym)
+            if fetch(:passenger_restart_with_sudo)
+              command = [:sudo]
+              # We preprocess the command with SSHKit::Command to allow
+              # 'passenger-config' to be transformed with the command map.
+              command << SSHKit::Command.new(*[*restart_command, fetch(:passenger_restart_options)]).to_s
+            else
+              command = restart_command
+              command << fetch(:passenger_restart_options)
+            end
+            execute *command
           end
         end
       end
