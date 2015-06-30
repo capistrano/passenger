@@ -26,9 +26,9 @@ Gem::Specification.new do |spec|
 passenger once had only one way to restart: `touch tmp/restart.txt`
 Beginning with passenger v4.0.33, a new way was introduced: `passenger-config restart-app`
 
-The new way to restart is not so practical for everyone, since it may require your deployment user to have sudo access.
-While we eagerly await the release of passenger v5.0.10, which will make the new method possible without sudo access,
-we recognize that not everyone is ready for this change yet.
+The new way to restart was not initially practical for everyone,
+since for versions of passenger prior to v5.0.10,
+it required your deployment user to have sudo access for some server configurations.
 
 capistrano-passenger gives you the flexibility to choose your restart approach, or to rely on reasonable defaults.
 
