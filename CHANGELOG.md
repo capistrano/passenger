@@ -1,3 +1,8 @@
+# 0.1.1 (30 June 2015)
+* Bug fixes:
+  * When detecting passenger version, we account for the fact the the version may not be on the first line of the captured output (@pzgz, capistrano/passenger#20)
+  * When executing the restart command without sudo, we make sure the first argument to execute is still a Symbol so that the command is executed in the appropriate directory (@FooBarWidget, capistrano/passenger#27)
+
 # 0.1.0 (3 June 2015)
 
 * BREAKING CHANGES
