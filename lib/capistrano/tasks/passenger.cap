@@ -86,7 +86,7 @@ namespace :load do
     set :passenger_restart_with_sudo, false
     set :passenger_environment_variables, {}
     set :passenger_restart_command, 'passenger-config restart-app'
-    set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
+    set :passenger_restart_options, -> { "--name #{current_path} --ignore-app-not-running" }
     set :passenger_rvm_ruby_version, ->{ fetch(:rvm_ruby_version) }
     _tasks = Rake.application.tasks.collect(&:to_s)
     if _tasks.include?("bundler:map_bins")
