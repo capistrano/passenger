@@ -2,6 +2,8 @@
 * Made passenger-status use the same Command Map prefixes as passenger and passenger-config.
   Even though it's not used in this project by default, it may be useful in some cases,
   such as when someone needs to determine the passenger instance ID
+* Only run passenger commands from the release_path if passenger is in the Gemfile.
+  Otherwise, it may be in a gemset that conflicts with a .ruby-gemset file in release_path.
 
 # 0.2.0 (8 Dec 2015)
 * Added support for passenger versions > 5.0.20
