@@ -1,3 +1,11 @@
+# Not released yet
+* Made passenger-status use the same Command Map prefixes as passenger and passenger-config.
+  Even though it's not used in this project by default, it may be useful in some cases,
+  such as when someone needs to determine the passenger instance ID
+
+# 0.2.0 (8 Dec 2015)
+* Added support for passenger versions > 5.0.20
+
 # 0.1.1 (30 June 2015)
 * Bug fixes:
   * When detecting passenger version, we account for the fact the the version may not be on the first line of the captured output (@pzgz, capistrano/passenger#20)

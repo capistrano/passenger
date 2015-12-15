@@ -47,7 +47,7 @@ namespace :passenger do
     task hook: :"passenger:test_which_passenger" do
       unless fetch(:passenger_in_path)
         if fetch(:passenger_rvm_ruby_version) == fetch(:rvm_ruby_version)
-          set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config']
+          set :rvm_map_bins, fetch(:rvm_map_bins) + [:passenger, :'passenger-config', :'passenger-status']
         else
           after :'rvm:hook', :'passenger:rvm:after_rvm_path_is_set'
         end
@@ -57,7 +57,7 @@ namespace :passenger do
     task :after_rvm_path_is_set do
       # This is very similar to code in capistrano-rvm.  Ideally, there would be a way to hook into that code instead of duplicating it with only minor changes.
       passenger_rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:passenger_rvm_ruby_version)} do"
-      [:passenger, :'passenger-config'].each do |command|
+      [:passenger, :'passenger-config', :'passenger-status'].each do |command|
         SSHKit.config.command_map.prefix[command.to_sym].unshift(passenger_rvm_prefix)
       end
     end
@@ -65,19 +65,19 @@ namespace :passenger do
 
   namespace :rbenv do
     task hook: :"passenger:test_which_passenger" do
-      set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config'] unless fetch(:passenger_in_path)
+      set :rbenv_map_bins, fetch(:rbenv_map_bins) + [:passenger, :'passenger-config', :'passenger-status'] unless fetch(:passenger_in_path)
     end
   end
 
   namespace :chruby do
     task hook: :"passenger:test_which_passenger" do
-      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config'] unless fetch(:passenger_in_path)
+      set :chruby_map_bins, fetch(:chruby_map_bins) + [:passenger, :'passenger-config', :'passenger-status'] unless fetch(:passenger_in_path)
     end
   end
 
   namespace :bundler do
     task :hook do
-      set :bundle_bins, fetch(:bundle_bins) + [:passenger, :'passenger-config'] if fetch(:passenger_in_gemfile, false)
+      set :bundle_bins, fetch(:bundle_bins) + [:passenger, :'passenger-config', :'passenger-status'] if fetch(:passenger_in_gemfile, false)
     end
   end
 end
