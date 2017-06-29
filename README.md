@@ -77,7 +77,7 @@ on roles(fetch(:passenger_roles)), in: fetch(:passenger_restart_runner), wait: f
 end
 ```
 
-Note that `passenger_restart_limit` has no effect if you are using the default `passenger_restart_runner` of `:sequence`.  sshkit only looks at it when the runner is `:group`.
+Note that `passenger_restart_limit` has no effect if you are using the default `passenger_restart_runner` of `:sequence`.  sshkit only looks at it when the runner is `:groups`.
 
 `:passenger_environment_variables` is available if anything about your environment is not available to the user deploying your application. One use-case for this is when `passenger-config` isn't available in your user's `PATH` on the server. You could override it like so:
 
