@@ -1,6 +1,6 @@
 # Capistrano::Passenger
 
-Adds a task to restart your application after deployment via Capistrano. Supports Passenger versions 5 and lower.
+Adds a task to restart your application after deployment via Capistrano. Supports Passenger versions 6 and lower.
 
 ## Installation
 
