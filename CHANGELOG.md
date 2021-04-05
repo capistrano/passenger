@@ -1,4 +1,6 @@
 # Not released yet
+
+# 0.2.1 (5 Apr 2021)
 * Made passenger-status use the same Command Map prefixes as passenger and passenger-config.
   Even though it's not used in this project by default, it may be useful in some cases,
   such as when someone needs to determine the passenger instance ID
