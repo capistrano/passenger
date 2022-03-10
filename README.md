@@ -101,6 +101,11 @@ set :passenger_environment_variables, { rbenv_version: '3.0.1' }
 
 If you are running passenger in standalone mode, it is possible for you to put passenger in your Gemfile and rely on capistrano-bundler to install it with the rest of your bundle.  If you are installing passenger during your deployment **AND** you are using the new restart method (see below), you need to set `:passenger_in_gemfile` to `true` in your `config/deploy.rb`.
 
+### Note for asdf users
+
+If you are using standalone passenger, and asdf through the [capistrano-asdf gem](https://github.com/cabesa-collective/capistrano-asdf), it should be enough to add the passenger binaries to the asdf variable.
+set :asdf_map_ruby_bins, %w[rake bundle gem ruby passenger passenger-config]
+
 ### Restarting Passenger >= 4.0.33 Applications
 
 Passenger 4.0.33 introduced a new way to restart your application, and thus has some additional configuration options to accomodate for various server environments.
