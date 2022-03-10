@@ -104,7 +104,10 @@ If you are running passenger in standalone mode, it is possible for you to put p
 ### Note for asdf users
 
 If you are using standalone passenger, and asdf through the [capistrano-asdf gem](https://github.com/cabesa-collective/capistrano-asdf), it should be enough to add the passenger binaries to the asdf variable.
+
+``` ruby
 set :asdf_map_ruby_bins, %w[rake bundle gem ruby passenger passenger-config]
+```
 
 ### Restarting Passenger >= 4.0.33 Applications
 
