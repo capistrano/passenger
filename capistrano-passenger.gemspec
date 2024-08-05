@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "capistrano", "~> 3.0"
-  spec.add_development_dependency "bundler", "~> 1.6"
+  spec.add_development_dependency "bundler", "~> 2.4"
   spec.add_development_dependency "rake"
   spec.post_install_message = <<PIM
 ==== Release notes for capistrano-passenger ====
