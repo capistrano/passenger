@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Passenger support for Capistrano 3.x}
   spec.description   = %q{Passenger support for Capistrano 3.x}
   spec.homepage      = "https://github.com/capistrano/passenger"
+  spec.metadata = { "rubygems_mfa_required" => "true" }
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
